@@ -7,10 +7,12 @@ COPY . /src/
 WORKDIR /src
 
 ENV GO111MODULE=on
-RUN --mount=type=cache,sharing=locked,id=gomod,target=/go/pkg/mod/cache \
-    --mount=type=cache,sharing=locked,id=goroot,target=/root/.cache/go-build \
-    CGO_ENABLED=0 GOOS=linux make build
+#RUN --mount=type=cache,sharing=locked,id=gomod,target=/go/pkg/mod/cache \
+#    --mount=type=cache,sharing=locked,id=goroot,target=/root/.cache/go-build \
+#    CGO_ENABLED=0 GOOS=linux make build
+RUN CGO_ENABLED=0 GOOS=linux make build
 
-FROM scratch
+FROM alpine:3.12
+RUN apk add bash 
 COPY --from=dev /src/kube-vip /
 ENTRYPOINT ["/kube-vip"]
